@@ -56,7 +56,12 @@ export interface RouteClassification {
  * handlers via assertAuth().
  */
 export interface AuthSubject {
-  kind: "client_api_key" | "dashboard_session" | "management_key" | "anonymous";
+  kind:
+    | "client_api_key"
+    | "customer_token"
+    | "dashboard_session"
+    | "management_key"
+    | "anonymous";
   /**
    * Stable identifier of the principal:
    *  - hashed key id for API keys

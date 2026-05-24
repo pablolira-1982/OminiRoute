@@ -80,6 +80,10 @@ export const HIDEABLE_SIDEBAR_ITEM_IDS = [
   "docs",
   "issues",
   "changelog",
+  // Customer SaaS
+  "customer-registration",
+  "customer-plans",
+  "customer-financial",
 ] as const;
 
 export type HideableSidebarItemId = (typeof HIDEABLE_SIDEBAR_ITEM_IDS)[number];
@@ -263,6 +267,36 @@ const INTEGRATIONS_GROUP: SidebarItemGroup = {
       i18nKey: "webhooks",
       subtitleKey: "webhooksSubtitle",
       icon: "webhook",
+    },
+  ],
+};
+
+const CUSTOMER_GROUP: SidebarItemGroup = {
+  type: "group",
+  id: "customer",
+  titleKey: "customerGroup",
+  titleFallback: "Customer",
+  items: [
+    {
+      id: "customer-registration",
+      href: "/dashboard/customer/registration",
+      i18nKey: "customerRegistration",
+      subtitleKey: "customerRegistrationSubtitle",
+      icon: "person_add",
+    },
+    {
+      id: "customer-plans",
+      href: "/dashboard/customer/plans",
+      i18nKey: "customerPlans",
+      subtitleKey: "customerPlansSubtitle",
+      icon: "cards",
+    },
+    {
+      id: "customer-financial",
+      href: "/dashboard/customer/financial",
+      i18nKey: "customerFinancial",
+      subtitleKey: "customerFinancialSubtitle",
+      icon: "payments",
     },
   ],
 };
@@ -714,6 +748,7 @@ export const SIDEBAR_SECTIONS: readonly SidebarSectionDefinition[] = [
       COMPRESSION_CONTEXT_GROUP,
       TOOLS_GROUP,
       INTEGRATIONS_GROUP,
+      CUSTOMER_GROUP,
       PROXY_GROUP,
     ],
     defaultPinned: true,

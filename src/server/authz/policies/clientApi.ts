@@ -36,6 +36,24 @@ export const clientApiPolicy: RoutePolicy = {
       return reject(401, "AUTH_002", "Authentication required");
     }
 
+    if (bearer.startsWith("sk-")) {
+      try {
+        const { validateCustomerToken } = await import("@/lib/customer-saas/token");
+        const customerToken = await validateCustomerToken(bearer);
+        if (!customerToken.ok) {
+          return reject(403, "AUTH_002", customerToken.message || "Invalid customer token");
+        }
+        return allow({
+          kind: "customer_token",
+          id: customerToken.customerId || "customer",
+          label: customerToken.subscriptionId || undefined,
+        });
+      } catch (error) {
+        console.error("[clientApiPolicy] customer token validation failed:", error);
+        return reject(503, "AUTH_503", "Customer token validation unavailable");
+      }
+    }
+
     const { validateApiKey } = await import("../../../lib/db/apiKeys");
     const ok = await validateApiKey(bearer);
     if (!ok) {
