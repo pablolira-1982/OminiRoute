@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOMAIN=""
+DOMAIN="route-api-syrus.ia.br"
 EMAIL=""
 APP_DIR="/opt/omniroute"
 APP_USER=""
@@ -48,8 +48,8 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-if [[ -z "$DOMAIN" || -z "$EMAIL" ]]; then
-  err "--domain and --email are required."
+if [[ -z "$EMAIL" ]]; then
+  err "--email is required."
   usage
   exit 1
 fi
@@ -69,7 +69,7 @@ DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 DEBIAN_FRONTEND=noninteractive apt-get install -y \
   ca-certificates curl gnupg lsb-release software-properties-common \
   git jq unzip build-essential pkg-config python3 make g++ \
-  nginx ufw certbot python3-certbot-nginx
+  nginx certbot python3-certbot-nginx
 
 install_node() {
   local current_major=""
@@ -147,7 +147,7 @@ cat >/etc/nginx/sites-available/onimiroute.conf <<EOF
 server {
     listen 80;
     listen [::]:80;
-    server_name $DOMAIN;
+    server_name $DOMAIN route-api-syrus.ia.br;
 
     client_max_body_size 20m;
 
@@ -170,11 +170,6 @@ ln -sf /etc/nginx/sites-available/onimiroute.conf /etc/nginx/sites-enabled/onimi
 rm -f /etc/nginx/sites-enabled/default || true
 nginx -t
 systemctl reload nginx
-
-log "Configuring UFW firewall..."
-ufw allow OpenSSH || true
-ufw allow 'Nginx Full' || true
-ufw --force enable || true
 
 if [[ "$SKIP_CERTBOT" == "0" ]]; then
   log "Requesting TLS certificate with Certbot..."
